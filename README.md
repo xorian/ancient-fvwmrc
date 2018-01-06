@@ -12,4 +12,4 @@ Found archived like this:
 
 Most likely last used on DEC UNIX on an Alpha workstation.  Untested
 on any version of fvwm more recent than the above timestamps.
-Uploaded on request.
+Uploaded on request.  See the file "top" for instructions.
