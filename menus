@@ -141,12 +141,6 @@ AddToMenu "Cutbuffer"		"Cutbuffer/Selection Manipulation"	Title
 #+				"HyperNews Quote"	Exec cat HOME/public_html/hn-bits/hn-quote.html | xselection PRIMARY -
 #+				"HyperNews Shell"	Exec cat HOME/public_html/hn-bits/hn-shell.html | xselection PRIMARY -
 #+				""		Nop
-#+				"Digital Homepage URL"	Exec      echo "http://www-cad.hlo.dec.com/~schalk/" | xselection PRIMARY -
-+				"TIAC Homepage URL"	Exec      echo "http://www.tiac.net/users/xorian/" | xselection PRIMARY -
-+				""		Nop
-+				"Digital e-mail address"	Exec      echo "schalk@cadsys.enet.dec.com" | xselection PRIMARY -
-+				"TIAC e-mail address"	Exec      echo "xorian@tiac.net" | xselection PRIMARY -
-+				""		Nop
 +				"Show cutbuffers"	Detach({run-xcb -display DISPLAY -geom 480x560})
 +				"Copy selection to..."	Popup  "CutbufferCopy"
 +				"Edit selection..."	Popup  "MungeSelection"
