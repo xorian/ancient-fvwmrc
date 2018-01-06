@@ -1,0 +1,54 @@
+# This file defines configuration options used by by the fvwm window
+# manager extension modules. It is included by the m4 pre-processing
+# step from the main configuration file.
+
+# ----------------------------------------------------------------------
+
+########################### Pager #########################################
+
+# Note that these are the same colors I used in the MenuStyle command,
+# which reduces the number of colors eaten up.
+*FvwmPagerBack gray60
+*FvwmPagerFore gray30
+*FvwmPagerHilight gray90
+
+*FvwmPagerFont -adobe-helvetica-bold-r-*-*-10-*-*-*-*-*-*-*
+*FvwmPagerSmallFont 6x10
+
+ifelse(DISPLAY_SCREEN, 0, {
+*FvwmPagerGeometry -1-1}, {
+*FvwmPagerGeometry +1-1})
+
+*FvwmPagerLabel 0 Main
+*FvwmDeskTopScale 25
+
+########################### Buttons #########################################
+
+# Agaian, the same colors as the menus and the pager
+*FvwmButtonsBack gray30
+*FvwmButtonsFore gray90
+
+# One column on the left edge of the screen
+*FvwmButtonsColumns 1
+*FvwmButtonsGeometry +0+0
+
+#*FvwmButtonsFont -adobe-helvetica-bold-r-*-*-10-*-*-*-*-*-*-*
+*FvwmButtonsFont -*-times-bold-r-*-*-12-*-*-*-*-*-*-*
+
+*FvwmButtons(Title Netscape, \
+		Icon reduced/NetscapeLogo.xpm, \
+		Action 'Exec netscape -install -display DISPLAY -geom 1112x988-2+1026 "&" &')
+*FvwmButtons(Title Emacs, \
+		Icon reduced/ClipboardWithPencilAndPaper.xpm, \
+		Action 'Exec xemacs -display DISPLAY "&" &')
+*FvwmButtons(Title XMan, \
+		Icon reduced/BooksSideBySide.xpm, \
+		Action 'Exec xman -display DISPLAY "&" &')
+*FvwmButtons(Title Graphics, \
+		Icon reduced/PaintBrushSplash.xpm, \
+		Action "Menu Graphics-Clients Nop")
+*FvwmButtons(Title 'Work', \
+		Icon reduced/interface.xpm, \
+		Action "Menu WorkMenu Nop")
+*FvwmButtons(Swallow(UseOld,NoKill) "xload" \
+		"Exec xload -fg gray90 -bg gray30 -hl gray60 -label `hostname -s` -geom 73x73")

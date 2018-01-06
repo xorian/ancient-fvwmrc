@@ -1,0 +1,9 @@
+# This file defines paths used by default by the fvwm window
+# manager. It is included by the m4 pre-processing step from
+# the system default configuration.
+
+# ----------------------------------------------------------------------
+
+ModulePath FVWMDIR
+PixmapPath /usr/include/X11/pixmaps
+IconPath   /usr/include/X11/bitmaps:/usr/include/X11/pixmaps

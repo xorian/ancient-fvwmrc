@@ -1,0 +1,234 @@
+# This file defines menus and functions used by by the fvwm window
+# manager. It is included by the m4 pre-processing step from the main
+# configuration file.
+
+# ----------------------------------------------------------------------
+
+AddToMenu RootMenu	"Root Menu"	Title
++			"New XTerm"	Exec win
++			"Cutbuffer/Selection"	Popup Cutbuffer
++			""		Nop
++			"Desktop Patterns"	Popup  "Desktop-Textures"
++			"Window Colors"	Popup  "Window-Colors"
++			""		Nop
++                       "Fvwm Window Ops"	Popup Window-Ops
++			""		Nop
++                       "Refresh Screen"   Refresh
++                       "Recapture Screen" Recapture
+ifelse(DISPLAY_SCREEN, 0, {
++			"Restart Pipe" 	Module  FvwmPipe}
++			"Kill Pipe" 	KillModule  FvwmPipe})
++			""		Nop
++			"Exit Fvwm"	Popup Quit-Verify
+
+AddToMenu Quit-Verify 	"Really Quit Fvwm?" Title	
++		      	"Yes, Really Quit"  Quit	
++		      	""		    Nop	
++                       "Restart"	Restart fvwm2
+
+AddToMenu Window-Ops	"&Move"		Move
++			"&Resize"	Resize
++			"R&aise"	Raise   	
++			"&Lower"	Lower   	
++			"(De)&Iconify"	Iconify 	
++			"(Un)&Stick"	Stick		
++                       "(Un)Ma&ximize" Maximize
++			""		Nop
++			"&Delete"	Delete	
++			"&Close"	Close
++			"Kill"		Destroy 	
++			""		Nop
++			"Refresh Window" RefreshWindow
++			"Print"         PrintFunction
++			"Identify"      Module  FvwmIdent
+
+AddToMenu Graphics-Clients 	"Graphics"	Title
++				"Pixmap"	Detach({HOME/scripts/run-pixmap -display DISPLAY})
++				"XFig"		Detach({HOME/scripts/run-xfig -display DISPLAY})
+
+# ----------------------------------------------------------------------
+# Customization on-the-fly
+
+AddToMenu "Desktop-Textures" "Desktop Textures" Title
+foreach_file(TEXTURE_DIR/*, {textureMenu})
+
+AddToMenu "Window-Colors" "Window Colors" Title
++			"Navy Blue"		HilightColor wheat NavyBlue
++			"Midnight Blue"		HilightColor wheat MidnightBlue
++			"Fire Brick"		HilightColor wheat firebrick
++			"Dark Red"		HilightColor wheat DarkRed
++			"Dark Green"		HilightColor wheat DarkGreen
+
+# ----------------------------------------------------------------------
+# Misc. functions
+
+AddToFunc PrintFunction		"I" Raise
++				"I" Exec xdpr -id $w
+
+AddToFunc PrintReverseFunction  "I" Raise
++                               "I" Exec xdpr 1/2 -h -rv -id $w
+
+AddToFunc Resize-or-Raise	"I" Raise
++				"M" Resize
++				"D" Lower
+
+AddToFunc Titlebar-MB1	"C" RaiseLower
++			"M" Raise
++			"M" Move
+
+AddToFunc Titlebar-MB3	"C" Raise
++			"C" Move
++			"M" Raise
++			"M" Move
+
+AddToFunc Frame-MB1	"C" RaiseLower
++			"M" Raise
++			"M" Resize
+
+AddToFunc Frame-MB3	"C" Raise
++			"C" Resize
++			"M" Raise
++			"M" Resize
+
+AddToFunc Icon-MB1	"C" Iconify
++			"M" Raise
++			"M" Move
+
+AddToFunc Move-or-Iconify	"I" Raise
++				"M" Move
++				"D" Iconify
+
+AddToFunc Move-or-Raise		"I" Raise
++				"M" Move
++				"D" Lower
+
+AddToFunc UnShade-on-Iconify	"I" Iconify
++				"I" WindowShade 2
+
+# ----------------------------------------------------------------------
+# Creative use of cutbuffers.
+
+AddToMenu "CutbufferCopy"	"buffer 0" Exec xcb -S 0
++				"buffer 1" Exec xcb -S 1
++				"buffer 2" Exec xcb -S 2
++				"buffer 3" Exec xcb -S 3
++				"buffer 4" Exec xcb -S 4
++				"buffer 5" Exec xcb -S 5
++				"buffer 6" Exec xcb -S 6
++				"buffer 7" Exec xcb -S 7
+
+AddToMenu "RotateToCutbuffer"	"buffer 1" Exec xcb -r -1
++				"buffer 2" Exec xcb -r -2
++				"buffer 3" Exec xcb -r -3
++				"buffer 4" Exec xcb -r -4
++				"buffer 5" Exec xcb -r -5
++				"buffer 6" Exec xcb -r -6
++				"buffer 7" Exec xcb -r -7
+
+# Edit the selection by piping it through some command, making it the
+# new top cutbuffer, and then re-selecting it.
+define({editSelection},
+{Exec xcb -r 1; xselection PRIMARY | $1 | xcb -s 0; xcb -p 0 | xselection PRIMARY -})
+
+AddToMenu "MungeSelection"	"Selection Editing"	Title
++				"E-mail quote"		editSelection(perl -p -e 's/^(\s*\S+\s*)/> \1/;')
++				"Downcase"		editSelection(perl -p -e 'tr/A-Z/a-z/;')
++				"Upcase"		editSelection(perl -p -e 'tr/a-z/A-Z/;')
++				"HTML quote"		editSelection(perl -p -e "s/&/&amp;/g; s/\"/&quot;/g; s/</&lt;/g; s/>/&gt;/g;")
+
+AddToMenu "Cutbuffer"		"Cutbuffer/Selection Manipulation"	Title
+#+				"HyperNews Sig"	Exec cat HOME/public_html/sig/hypernews.shtml | xselection PRIMARY -
+#+				"HyperNews Quote"	Exec cat HOME/public_html/hn-bits/hn-quote.html | xselection PRIMARY -
+#+				"HyperNews Shell"	Exec cat HOME/public_html/hn-bits/hn-shell.html | xselection PRIMARY -
+#+				""		Nop
+#+				"Digital Homepage URL"	Exec      echo "http://www-cad.hlo.dec.com/~schalk/" | xselection PRIMARY -
++				"TIAC Homepage URL"	Exec      echo "http://www.tiac.net/users/xorian/" | xselection PRIMARY -
++				""		Nop
++				"Digital e-mail address"	Exec      echo "schalk@cadsys.enet.dec.com" | xselection PRIMARY -
++				"TIAC e-mail address"	Exec      echo "xorian@tiac.net" | xselection PRIMARY -
++				""		Nop
++				"Show cutbuffers"	Detach({run-xcb -display DISPLAY -geom 480x560})
++				"Copy selection to..."	Popup  "CutbufferCopy"
++				"Edit selection..."	Popup  "MungeSelection"
++				""		Nop
++				"Rotate up"		Exec xcb -r -1
++				"Rotate down"		Exec xcb -r 1
++				"Rotate to..."	Popup  "RotateToCutbuffer"
+
+# ----------------------------------------------------------------------
+# Personal stuff to make my day-to-day tasks easier.
+
+define({scriptWin},
+{Exec xterm -T '$1' -n '$1' -fg $2 -bg black -sb -sl 4000 $4 -e $3 &})
+
+define({ScriptDisplay}, {-display :0.0})dnl
+define({ScriptFont}, {-fn '-*-courier-medium-r-normal-*-10-*-*-*-*-*-*-*'})dnl
+define({ScriptGeom}, {-geometry 105x60-0+57})dnl
+define({ScriptArgs}, {ScriptDisplay ScriptFont ScriptGeom})dnl
+
+# define({waveBuildPartMenu}, {
+# AddToMenu $1	"$2"	Title
+# $3(all)
+# +			""		Nop
+# foreach({$3},
+# wave_va_shr_dbg.exe,
+# wave.uid)
+# +			""		Nop
+# foreach({$3},
+# wave_browser.obj,
+# wave_clock.obj,
+# wave_container_editor.obj,
+# wave_control_box.obj,
+# wave_create_ps.obj,
+# wave_db_utils.obj,
+# wave_edge_editor.obj,
+# wave_em_types.obj,
+# wave_for_containers.obj,
+# wave_grapes_writer.obj,
+# wave_help.obj,
+# wave_highlight.obj,
+# wave_math.obj,
+# wave_note.obj,
+# wave_pwl_editor.obj,
+# wave_refline.obj,
+# wave_scale.obj,
+# wave_simulate.obj,
+# wave_simulation_management.obj,
+# wave_trace.obj,
+# wave_undo.obj,
+# wave_utils.obj,
+# wave_views.obj,
+# wave_wf.obj,
+# wave_wm.obj,
+# osc.obj)})
+# 
+# define({waveBuildPartMenuItem},
+# {+	"$1"	scriptWin({Compiling Wave: $1}, {yellow}, {HOME/scripts/vms-compile wave $1}, ScriptArgs)})
+# 
+# waveBuildPartMenu({WaveBits}, {Wave Components}, {waveBuildPartMenuItem})
+# 
+# define({waveCxxBuildPartMenuItem},
+# {+	"$1"	scriptWin({Compiling Wave w/C++: $1}, {yellow}, {HOME/scripts/vms-compile wave $1 cxx}, ScriptArgs)})
+# 
+# waveBuildPartMenu({CxxWaveBits}, {Compile Component w/C++}, {waveCxxBuildPartMenuItem})
+# 
+# define({waveOscBuildPartMenuItem},
+# {+	"$1"	scriptWin({Compiling Wave w/OSC: $1}, {yellow}, {HOME/scripts/vms-compile wave $1 osc}, ScriptArgs)})
+# 
+# waveBuildPartMenu({OscWaveBits}, {Compile Component w/OSC}, {waveOscBuildPartMenuItem})
+# 
+# AddToMenu WorkMenu	"Work"		Title
+# +			"Compile Wave"	Popup  "WaveBits"
+# +			"Compile Wave w/OSC"	Popup  "OscWaveBits"
+# +			"Compile Wave w/C++"	Popup  "CxxWaveBits"
+# +			"Compile Save-As"	scriptWin({Compiling Save-As}, {yellow}, {HOME/scripts/vms-compile save-as}, ScriptArgs)
+# +			""		Nop
+# +			"Build CVOGR"	scriptWin({Building CVOGR}, {yellow}, {HOME/scripts/vms-compile build-cvogr}, ScriptArgs)
+# +			"Build ALOE"	scriptWin({Building ALOE}, {yellow}, {HOME/scripts/vms-compile build-aloe}, ScriptArgs)
+# +			""		Nop
+# +			"Edit Last Compile Output"	Exec emacs ScriptDisplay ScriptGeom -f small-font -fg yellow -bg black `cat HOME/.compile-output/latest` &
+# +			""		Nop
+# +			"ALOE Build"	scriptWin({ALOE Dev}, {green}, HOME/scripts/aloe-dev, ScriptArgs)
+# +			"ALOE Debug"	scriptWin({ALOE Dev}, {green}, {HOME/scripts/aloe-dev -debug}, ScriptArgs)
+# +			"ALOE Debug w/OSC"	scriptWin({ALOE Dev}, {green}, {HOME/scripts/aloe-dev -osc}, ScriptArgs)
+# +			"ALOE Debug w/C++"	scriptWin({ALOE Dev}, {green}, {HOME/scripts/aloe-dev -cxx}, ScriptArgs)

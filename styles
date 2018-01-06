@@ -1,0 +1,66 @@
+# This file defines window decoration styles used by by the fvwm
+# window manager. It is included by the m4 pre-processing step from
+# the main configuration file.
+
+# ----------------------------------------------------------------------
+
+# Expanding Windows (iconify -- looks NICE)
+ButtonStyle 4 16 60x40@1 60x80@0 15x80@0 15x40@1 60x40@1 40x40@1 \
+ 	40x25@1 75x25@1 75x60@0 60x60@0 75x60@0 75x40@0 85x40@0 85x15@0  \
+ 	60x15@1 60x25@1
+
+# Big Box with arrow to little box (iconify)
+# ButtonStyle 4 14 20x20@1 20x70@1 70x70@0 70x20@0 20x20@1 60x60@0 \
+#	60x50@0 60x60@0 50x60@0 60x60@0 60x80@0 80x80@0 80x60@0 60x60@0
+
+# Small Lightning Bolt (skinny at both ends)
+# ButtonStyle 1 7 70x15@0 30x55@1 50x55@0 40x85@1 80x45@0 60x45@1 70x15@0
+
+# Funky X 
+ButtonStyle 1 13 26x29@1 34x21@1 50x35@1 70x21@1 79x29@1 63x48@0 \
+	79x65@1 70x75@0 50x61@0 34x75@0 26x65@0 44x48@1 26x29@0
+
+# Stylized X
+# ButtonStyle 1 16 20x20@1 30x20@1 50x40@1 70x20@1 80x20@1 80x30@0 \
+#	60x50@0 80x80@1 70x80@0 50x60@0 30x80@0 20x80@0 20x70@0 40x50@1 \
+#	20x30@0 20x20@1
+
+# Large up Triangle (WindowShade)
+ButtonStyle 6 4 50x25@1 75x75@0 25x75@0 50x25@1
+
+# default Styles:
+Style "*"           BorderWidth 2, HandleWidth 6
+#Style "*"           Color Black/#d3d3d3
+#Style "*"           Color Black/wheat
+#Style "*"           Color Black/DarkKhaki
+#Style "*"           Color Black/tan
+Style "*"           Color gray90/gray30
+Style "*"           Icon reduced/Pixar.xpm, StickyIcon
+Style "*"           MWMFunctions, MWMDecor, HintOverride
+Style "*"           DecorateTransient, NoPPosition
+Style "*"           IconBox 65 5 -10 80
+Style "*"           FocusFollowsMouse
+Style "*"           RandomPlacement, SmartPlacement
+
+# Styles for various Fvwm modules:
+Style "Fvwm*"       NoTitle,  Sticky, WindowListSkip
+Style "Fvwm*"       CirculateSkipIcon, CirculateSkip
+Style "FvwmPager"   StaysOnTop
+Style "FvwmButtons" StaysOnTop, NoHandles, BorderWidth 0, ClickToFocus
+
+# Terminals and Emacs should always have titles, even if they are
+# displaying something Fvwm.
+
+Style "XTerm"	Title, Icon reduced/Wizard.xpm, SloppyFocus
+
+# Emacs should keep the focus
+Style "Emacs"	Title, SloppyFocus
+
+# Netscape should keep the focus
+Style "Netscape"	Title, SloppyFocus
+
+# Motif Tear-off menus should get a title
+Style "*Tear-off" Title
+
+# Xcb gets an icon, is sticky, and doesn't need handles.
+Style "Xcb" NoHandles, Sticky, WindowListSkip, BorderWidth 0, Icon reduced/PasteboardInspector.xpm

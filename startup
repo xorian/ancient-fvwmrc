@@ -1,0 +1,34 @@
+# This file defines startup and restart actions used by by the fvwm
+# window manager. It is included by the m4 pre-processing step from
+# the main configuration file.
+
+# ----------------------------------------------------------------------
+
+AddToFunc InitFunction	"I"	Module  FvwmPager 0 0
++			"I" 	GotoPage 0 0
++			"I" 	Scroll -100 -100
++			"I" 	texCmd(Texture)
++			"I" 	Module  FvwmButtons
++			"I" 	Exec  win
+#+			"I" 	Exec HOME/scripts/restore-cutbuffers DISPLAY_SCREEN
+#+			"I"	Detach({run-xcb -ic -display DISPLAY -geom 480x560})
+#ifelse(DISPLAY_SCREEN, 0, {
+#+			"I" 	Exec hostname > HOME/.fvwmpipe.machine
+#+			"I" 	Module  FvwmPipe})
+#ifelse(DISPLAY_SCREEN, 1, {
+#+			"I" 	Module  FvwmButtons
+#+			"I" 	Exec netscape -install -geom 1112x988-2+1026 &
+#+			"I" 	Exec win DISPLAY &})
+
+
+AddToFunc RestartFunction	"I"	Module  FvwmPager 0 0
++				"I" 	GotoPage 0 0
++				"I" 	Scroll -100 -100
++				"I" 	Module  FvwmButtons
+#ifelse(DISPLAY_SCREEN, 0, {
+#+				"I" 	Exec hostname > HOME/.fvwmpipe.machine
+#+				"I" 	Module  FvwmPipe})
+#ifelse(DISPLAY_SCREEN, 1, {
+#+				"I" 	Module  FvwmButtons})
+
+#AddToFunc ExitFunction	"I"	Exec HOME/scripts/save-cutbuffers DISPLAY_SCREEN

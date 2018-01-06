@@ -1,0 +1,55 @@
+# This file defines key and mouse bindings used by by the fvwm window
+# manager. It is included by the m4 pre-processing step from the main
+# configuration file.
+
+# ----------------------------------------------------------------------
+
+Mouse 1	R   	A       Menu RootMenu Nop
+Mouse 2	R    	A      	Menu Window-Ops Nop
+Mouse 3	R    	A      	WindowList
+
+# Title-bar buttons
+Mouse 0	1    	A      	Menu Window-Ops Close
+Mouse 1	2    	A     	Maximize
+Mouse 2	2    	A     	Maximize 0 100
+Mouse 3	2    	A     	Maximize 100 0
+Mouse 0	4    	A     	Function UnShade-on-Iconify
+Mouse 0	6    	A     	WindowShade
+
+# Window actions:
+#   - Left button raise/lowers on a single click and moves/resizes on
+#     motion
+#   - Middle button on windows frame gives menu
+#   - Right button moves/resizes on a single click (or motion)
+Mouse 1	FS	A	Function Frame-MB1
+Mouse 1	T	A	Function Titlebar-MB1
+Mouse 2	FST	A	Menu Window-Ops Nop
+Mouse 3	FS	A	Function Frame-MB3
+Mouse 3	T	A	Function Titlebar-MB3
+# Mouse 3	TSF	A	RaiseLower
+
+# Icon actions
+#   - Left button raise/lowers on a single click and moves on
+#     motion
+#   - Middle button gives menu
+#   - Right button raise/lowers
+Mouse 1	I	A	Function Icon-MB1
+Mouse 2	I	A	Menu Window-Ops Nop
+Mouse 3	I	A	RaiseLower
+
+# press arrow + control anywhere, and scroll by 1 page
+Key Left	A	C	Scroll -100 0
+Key Right	A	C	Scroll +100 +0
+Key Up		A	C	Scroll +0   -100
+Key Down	A	C	Scroll +0   +100
+
+# press arrow on the root window, and scroll by 1 page
+Key Left	R	A	Scroll -100 0
+Key Right	R	A	Scroll +100 +0
+Key Up		R	A	Scroll +0   -100
+Key Down	R	A	Scroll +0   +100
+
+# Mod2-Tab -> 		next window, same desk
+# Mod2-Shift-Tab ->	prev window, same desk
+Key	Tab	A	2	Next [CurrentDesk !iconic] WarpToWindow
+Key	Tab	A	2S	Prev [CurrentDesk !iconic] WarpToWindow

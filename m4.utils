@@ -1,0 +1,121 @@
+# ----------------------------------------------------------------------
+# Set up some macros based on the display
+# ----------------------------------------------------------------------
+
+# chomp(string) - returns everything up to the first line break in
+# string.
+define({chomp}, {substr($1, 0, regexp($1, {$}))})dnl
+
+# DISPLAY - the same as the environment variable
+
+define({DISPLAY}, chomp(esyscmd({echo $DISPLAY})))
+
+# DISPLAY_NOSCREEN - if DISPLAY had a screen specifier, this is it
+# without it.
+
+define({DISPLAY_NOSCREEN}, patsubst(DISPLAY, {\.[0-9]+$}))
+
+# DISPLAY_HOST - the host of this display.  For instance, if DISPLAY
+# is foo:x.y, this is foo.
+
+# DISPLAY_NUM - the number of this display.  For instance, if DISPLAY
+# is foo:x.y, this is x.
+
+# DISPLAY_SCREEN - the number of this screen.  For instance, if
+# DISPLAY is foo:x.y, this is y.
+
+patsubst(DISPLAY, {^\([^:]*\):+\([0-9]+\)\.\([0-9]+\)$},
+{define({DISPLAY_HOST}, \1)
+define({DISPLAY_NUM}, \2)
+define({DISPLAY_SCREEN}, \3)})
+
+# DISPLAY_SCREEN_COUNT - the total number of screens this display has.
+
+patsubst(esyscmd({xdpyinfo | grep "number of screens"}), {^.*\([0-9]+\).*$}, {
+define({DISPLAY_SCREEN_COUNT}, \1)})
+
+# DISPLAY_NEXT_SCREEN - the number of the nexct screen in this display.
+
+define({DISPLAY_NEXT_SCREEN}, eval((DISPLAY_SCREEN + 1) % DISPLAY_SCREEN_COUNT))
+
+# DISPLAY_TCPIP - the display using TCP/IP transport
+# DISPLAY_DECNET - the display using DECnet transport
+
+define({DISPLAY_TCPIP}, {DISPLAY_HOST:DISPLAY_NUM.DISPLAY_SCREEN})
+define({DISPLAY_DECNET}, {DISPLAY_HOST::DISPLAY_NUM.DISPLAY_SCREEN})
+
+# ----------------------------------------------------------------------
+# A few utility functions
+# ----------------------------------------------------------------------
+
+# rand(limit) - provides an integer pseudo-random number between 0 and limit.
+
+define({rand}, {eval(esyscmd({date +1%H%M%S}) % $1)})dnl
+
+# select(n, ...) - returns its (n+1)th argument
+
+define({select}, {ifelse($1, 0, $2, {select(eval($1 - 1), shift(shift($@)))})})dnl
+
+# pick(...) - returns one of it}s arguments at [pseudo-]random.
+# (Useful for varying configuration options.)
+
+define({pick}, {select(rand($#), $@)})dnl
+
+# basename(file) - like the shell command (see basename(1)).
+
+define({basename}, {patsubst($1, {.*/\([^/]+\)/*$}, {\1})})
+
+# dirname(file) - like the shell command (see dirname(1)).
+
+define({dirname}, {patsubst($1, {\(.*\)/[^/]+/*$}, {\1})})
+
+# extension(file) - returns the extension of file (if any).
+
+define({extension}, {substr($1, regexp($1, {[^.]+$}))})dnl
+
+# rootname(file) - returns everything but the extension of file.
+
+define({rootname}, {substr($1, 0, regexp($1, {.[^.]+$}))})dnl
+
+# foreach_file(pattern, macro) - invokes macro once for each file
+# matching the pattern.  Be sure to quote the macro name.
+
+define({foreach_file}, {esyscmd({for file in $1; do echo $2"("$file")"; done})})dnl
+
+# pick_file(pattern, macro) - invokes macro for one file matching the
+# pattern chosen at [pseudo-]random.  Be sure to quote the macro name.
+
+define({pick_file}, {esyscmd({perl -e 'print("$2(pick(", join(",", glob("$1")), "))\n");'})})dnl
+
+# includeConfig(file) - Include either the user's override file or the
+# default if they don't have one.  Looks for the user's file in
+# USER_RCDIR, and the system default in SYSTEM_RCDIR, so you should
+# define those macros before this gets defined.  Note that this uses
+# sinclude, so no error will be produced if the doesn't exist at all
+# in either places.
+
+define({includeConfig}, {syscmd(test -r USER_RCDIR/$1)dnl
+{# Checking on:} USER_RCDIR/$1
+{# sysval is:} sysval
+ifelse(sysval, 0, {sinclude(USER_RCDIR/$1)},
+{sinclude(SYSTEM_RCDIR/$1)})})dnl
+
+# foreach(macro, [item, ...]) - Calls a macro once for each of the
+# remaining arguments.
+
+define({foreach}, {ifelse($#, 0, , $#, 1, , $#, 2, {$1($2)},
+{$1($2)
+foreach({$1}, shift(shift($@)))})})dnl
+
+# reverse(list) - Reverses a list
+
+define({reverse}, {ifelse($#, 0, , $#, 1, {$1},
+                          {reverse(shift($@)), {$1}})})dnl
+
+# Detach(command) - produces stuff to make Fvwm actually detach the
+# specified command.  Should probably include a display specification,
+# or it may not work.  Note that this should wind up creating two
+# processes, one rsh, and the actual command.  The command *does not*
+# need to include & at the end.
+
+define({Detach}, {Exec rsh localhost $1 '&' &})dnl

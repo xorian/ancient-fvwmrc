@@ -1,0 +1,61 @@
+# This file defines miscellaneous options used by by the fvwm window
+# manager. It is included by the m4 pre-processing step from the
+# main configuration file.
+
+# ----------------------------------------------------------------------
+
+# Paths
+ModulePath FVWMDIR
+PixmapPath /usr/include/X11/pixmaps
+IconPath   /usr/include/X11/bitmaps:/usr/include/X11/pixmaps
+
+# By what percent of the physical screen size do we scroll when moving
+# past the edge?
+EdgeScroll 100 100
+
+# How hard is it move past the edge of the screen.  (The first is a
+# delay in milliseconds, the second is pixels for moving windows.)
+EdgeResistance 100 50
+
+# How big is the virtual desktop?
+DeskTopSize 3x3
+
+# Menu colors and font
+MenuStyle gray90 gray30 gray60 -*-times-bold-r-*-*-12-*-*-*-*-*-*-* mwm
+
+# Title bar font
+WindowFont              	"-*-helvetica-bold-o-*-*-14-*-*-*-*-*-*-*"
+
+# Icon font
+IconFont                	-*-helvetica-bold-r-*-*-10-*-*-*-*-*-*-*
+
+# Border color of the window with the focus
+define({HiBack},pick(
+{NavyBlue},
+{MidnightBlue},
+{firebrick},
+{DarkRed},
+{DarkGreen}))
+Echo The randomly selected hilight background color is: HiBack
+HilightColor wheat HiBack
+
+# How big can a window be and still be moved opaquely? 
+OpaqueMoveSize 10
+
+# How long is the delay between button-down and button-up in a click?
+# (Default is 150 ms.)
+ClickTime 150
+
+# Colormap focus policy
+ColormapFocus FollowsFocus
+
+# Some genreal desktop pattern-related macros
+define({TEXTURE_DIR}, /usr/include/X11/pixmaps/desk-textures)dnl
+define({texName}, {translit(rootname($1), {_}, { })})dnl
+define({texCmd}, {Exec xv -root -ncols 70 -smooth '$1' -quit})dnl
+define({textureMenu}, {+  "texName(basename($1))" texCmd($1)})dnl
+
+# Choose a background pattern
+define({tex_choose}, {define({Texture}, $1)})dnl
+pick_file(TEXTURE_DIR/*, {tex_choose})dnl
+Echo The randomly selected background pattern is: texName(basename(Texture))

@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------
+
+# ~/.fvwm2rc/top
+
+# This configuration file assumes m4 preprocessing with GNUW m4 and
+# the quotes redefined to be { and }.  Typically, you would do this
+# with something like this:
+
+# fvwm2 -cmd "FvwmM4 -m4prog gm4 -m4-squote { -m4-equote } <this-file>"
+
+# Obviously, gm4 should be replaced with whatever GNU m4 is installed
+# as on your system, and <this-file> should be replaced with the path
+# to this file.
+
+# ----------------------------------------------------------------------
+
+# These are where we look for other files.  It might be worth
+# redefining these for your site.
+
+define({SYSTEM_RCDIR}, FVWMDIR/default.fvwm2rc)
+define({USER_RCDIR}, HOME/.fvwm2rc)
+
+# First some handy m4 macros
+sinclude(SYSTEM_RCDIR/m4.utils)
+
+# Now if the user has anything personal macros they'd like to have.
+sinclude(USER_RCDIR/m4.peramble)
+
+# ----------------------------------------------------------------------
+
+# There may be some special options for the server and client machines
+# we're using.
+includeConfig(server-SERVERHOST)
+includeConfig(client-CLIENTHOST)
+
+# Misc. Stuff
+includeConfig(general)
+
+# Window decoration styles
+includeConfig(styles)
+
+# Menu & function definitions
+includeConfig(menus)
+
+# Key & mouse bindings
+includeConfig(bindings)
+
+# Startup & restart stuff
+includeConfig(startup)
+
+# Module configuration
+includeConfig(modules)
+
